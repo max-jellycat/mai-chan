@@ -13,6 +13,12 @@ __lua__
 -- powerups instead of points
 ---------------------
 
+-- TODO --
+-- control board size with variable
+-- cursor
+-- orders
+-- selling buns !
+
 function _init()
   fadeperc = 0
   dpal = {0, 1, 1, 2, 1, 13, 6, 4, 4, 9, 3, 13, 1, 13, 14}
@@ -23,6 +29,16 @@ end
 function startgame()
   _upd = update_game
   _drw = draw_game
+  rndbuns()
+end
+
+function rndbuns()
+  local _i
+  buns = {}
+
+  for _i = 0,15 do
+    buns[_i] = flr(rnd(4))    
+  end
 end
 
 -->8
@@ -40,6 +56,7 @@ function update_main()
 end
 
 function update_game()
+  if (btnp(5)) rndbuns()
 end
 
 -->8
@@ -61,17 +78,36 @@ function draw_main()
 end
 
 function draw_game()
-  local _x, _y, _tx, _ty
+  local _x, _y, _i, _tx, _ty
   checkfade()
   cls(7)
 
   for _x = 0,3 do
     for _y = 0,3 do
       _tx = 32 + _x * 17
-      _ty = 32 + _y * 17
+      _ty = 20 + _y * 17
       rrectfill(_tx, _ty, _tx + 15, _ty + 13, 6)
     end
   end
+
+  for _x = 0,3 do
+    for _y = 0,3 do
+      _tx = 32 + _x * 17
+      _ty = 19 + _y * 17
+      _i = _x + _y * 4
+      drawbun(_tx, _ty, buns[_i])
+    end
+  end
+end
+
+function drawbun(_x, _y, _spr)
+  -- shadow
+  pal(2, 13)
+  spr(_spr * 2, _x, _y + 1, 2, 2)
+
+  -- bun
+  pal()
+  spr(_spr * 2, _x, _y, 2, 2)
 end
 
 -->8
