@@ -5,16 +5,89 @@ __lua__
 -- mai-chan's sweet buns
 -- by jellycat
 
+---------------------
+-- how many rows and cols ?
+-- how many orders ?
+-- allow 1x orders ?
+-- game over condition ?
+-- powerups instead of points
+---------------------
+
 function _init()
-  
+  _upd = update_main
+  _drw = draw_main
 end
+
+function startgame()
+  _upd = update_game
+  _drw = draw_game
+end
+
+-->8
+-- updates
 
 function _update60()
-  
+  _upd()
 end
 
+function update_main()
+  if btnp(5) then
+    startgame()
+  end
+end
+
+function update_game()
+end
+
+-->8
+-- draws
+
 function _draw()
-  cls()
+  _drw()
+end
+
+function draw_main()
+  cls(14)
+  rrectfill(32, 27, 94, 50, 15)
+  coprint("mai-chan's", 64, 32, 7, 13)
+  coprint("sweet buns", 64, 38, 7, 13)
+  
+  rrectfill(32, 90, 94, 99, 13)
+  coprint("start game", 64, 92, 7, 1)
+end
+
+function draw_game()
+  cls(7)
+end
+
+-->8
+-- ui
+
+function cprint(_t, _x ,_y, _c)
+  -- centered print
+  print(_t, _x - #_t*2, _y , _c)
+end
+
+function coprint(_t, _x ,_y, _c, _c2)
+  -- centered print with outline
+  oprint(_t, _x - #_t*2, _y , _c, _c2)
+end
+
+function oprint(_t, _x ,_y, _c, _c2)
+  -- outlined print
+  local _xo, _yo =  {-1, 1, 0, 0, -1, -1, 1, 1, -1, 0, 1},
+                    {0, 0, -1, 1, -1, 1, -1, 1, 2, 2, 2}
+
+  for i = 1,11 do
+    print(_t, _x + _xo[i], _y + _yo[i], _c2)
+  end
+
+  print(_t, _x, _y, _c)
+end
+
+function rrectfill(_x, _y, _x2, _y2, _c)
+  rectfill(_x, _y, _x2, _y2, _c)
+  rectfill(_x + 1, _y - 1, _x2 - 1, _y2 + 1, _c)
 end
 
 __gfx__
