@@ -14,6 +14,8 @@ __lua__
 ---------------------
 
 function _init()
+  fadeperc = 0
+  dpal = {0, 1, 1, 2, 1, 13, 6, 4, 4, 9, 3, 13, 1, 13, 14}
   _upd = update_main
   _drw = draw_main
 end
@@ -31,7 +33,8 @@ function _update60()
 end
 
 function update_main()
-  if btnp(5) then
+  if btnp(5) then 
+    fadeout()
     startgame()
   end
 end
@@ -47,6 +50,7 @@ function _draw()
 end
 
 function draw_main()
+  checkfade()
   cls(14)
   rrectfill(32, 27, 94, 50, 15)
   coprint("mai-chan's", 64, 32, 7, 13)
@@ -57,7 +61,17 @@ function draw_main()
 end
 
 function draw_game()
+  local _x, _y, _tx, _ty
+  checkfade()
   cls(7)
+
+  for _x = 0,3 do
+    for _y = 0,3 do
+      _tx = 32 + _x * 17
+      _ty = 32 + _y * 17
+      rrectfill(_tx, _ty, _tx + 15, _ty + 13, 6)
+    end
+  end
 end
 
 -->8
@@ -88,6 +102,36 @@ end
 function rrectfill(_x, _y, _x2, _y2, _c)
   rectfill(_x, _y, _x2, _y2, _c)
   rectfill(_x + 1, _y - 1, _x2 - 1, _y2 + 1, _c)
+end
+
+function fadeout(_spd)
+  if (_spd == nil) _spd = 0.04
+  repeat
+    fadeperc = min(fadeperc + _spd, 1)
+    dofade()
+    flip()
+  until fadeperc == 1
+end
+
+function checkfade()
+  if fadeperc > 0 then
+    fadeperc = max(fadeperc - 0.04, 0)
+    dofade()
+  end
+end
+
+function dofade()
+  -- 0 means normal
+  -- 1 is completely black
+  local p, kmax, col, j, k = flr(mid(0, fadeperc, 1) * 100)
+  for j = 1,15 do
+    col = j
+    kmax = (p + (j * 1.46)) / 22
+    for k = 1,kmax do
+      col = dpal[col]
+    end
+    pal(j, col, 1)
+  end
 end
 
 __gfx__
