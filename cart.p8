@@ -86,14 +86,14 @@ function draw_game()
     for _y = 0,3 do
       _tx = 32 + _x * 17
       _ty = 20 + _y * 17
-      rrectfill(_tx, _ty, _tx + 15, _ty + 13, 6)
+      rrectfill(_tx, _ty, _tx + 15, _ty + 15, 6)
     end
   end
 
   for _x = 0,3 do
     for _y = 0,3 do
       _tx = 32 + _x * 17
-      _ty = 19 + _y * 17
+      _ty = 20 + _y * 17
       _i = _x + _y * 4
       drawbun(_tx, _ty, buns[_i])
     end
@@ -136,8 +136,8 @@ function oprint(_t, _x ,_y, _c, _c2)
 end
 
 function rrectfill(_x, _y, _x2, _y2, _c)
-  rectfill(_x, _y, _x2, _y2, _c)
-  rectfill(_x + 1, _y - 1, _x2 - 1, _y2 + 1, _c)
+  rectfill(_x, _y + 1, _x2, _y2 - 1, _c)
+  rectfill(_x + 1, _y, _x2 - 1, _y2, _c)
 end
 
 function fadeout(_spd)
