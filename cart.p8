@@ -13,7 +13,7 @@ __lua__
 -- powerups instead of points
 ---------------------
 
--- TODO --
+-- todo --
 -- control board size with variable
 -- cursor
 -- orders
@@ -24,6 +24,7 @@ function _init()
   dpal = {0, 1, 1, 2, 1, 13, 6, 4, 4, 9, 3, 13, 1, 13, 14}
   _upd = update_main
   _drw = draw_main
+
 end
 
 function startgame()
@@ -33,11 +34,30 @@ function startgame()
 end
 
 function rndbuns()
-  local _i
-  buns = {}
+  local _i, _di, _imax, _x, _y
 
-  for _i = 0,15 do
-    buns[_i] = flr(rnd(4))    
+  -- init board
+  boardw, boardh = 4, 4 
+  boardx, boardy = flr(64 - (boardw * 17 / 2)), 20
+
+  buns = {}
+  mailbox = {}
+  
+  -- fill with offscreen values
+  _imax = (boardh + 2) * (boardw + 1) - 1
+  for _i = 0,_imax do
+    buns[_i] = -1  
+  end
+
+  -- fill just the board with buns
+  _imax = boardh * boardw - 1
+  for _x = 0,boardw - 1 do
+    for _y = 0, boardh - 1 do
+      _i = _x + _y * boardw
+      _di = _x + (_y + 1) * (boardw + 1)
+      mailbox[_i] = _di
+      buns[_di] = flr(rnd(4))
+    end
   end
 end
 
@@ -82,20 +102,24 @@ function draw_game()
   checkfade()
   cls(7)
 
-  for _x = 0,3 do
-    for _y = 0,3 do
-      _tx = 32 + _x * 17
-      _ty = 20 + _y * 17
+  for _x = 0,boardw - 1 do
+    for _y = 0,boardh - 1 do
+      _tx = boardx + _x * 17
+      _ty = boardy + _y * 17
       rrectfill(_tx, _ty, _tx + 15, _ty + 15, 6)
     end
   end
 
-  for _x = 0,3 do
-    for _y = 0,3 do
-      _tx = 32 + _x * 17
-      _ty = 20 + _y * 17
-      _i = _x + _y * 4
-      drawbun(_tx, _ty, buns[_i])
+  for _x = 0,boardw - 1 do
+    for _y = 0,boardh - 1 do
+      _tx = boardx + _x * 17
+      _ty = boardy + _y * 17
+      _i = mailbox[_x + _y * boardw]
+      if buns[_i] == -1 then
+        -- offscreen
+      else
+        drawbun(_tx, _ty, buns[_i])
+      end
     end
   end
 end
